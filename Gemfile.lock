@@ -1,0 +1,14 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    addressable (2.3.2)
+    hiroshimarb (0.0.3)
+      launchy (~> 2.1.2)
+    launchy (2.1.2)
+      addressable (~> 2.3)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  hiroshimarb

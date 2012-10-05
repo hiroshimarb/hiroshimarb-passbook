@@ -1,0 +1,76 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+
+require 'json'
+require 'hiroshimarb/member'
+
+def pass_json(member)
+  pass = {
+    formatVersion: 1,
+    # 証明書の Organiaztional Unitを指定する
+    teamIdentifier: "M2PPMA28EN",
+    # Provisioning Portal で作成した id を仕様
+    passTypeIdentifier: "pass.info.eiel.hiroshimarb",
+    description: "Hiroshima.rb member", # Voice Over で読み上げがされたりもする
+    serialNumber: "eiel",
+    organizationName: "Hiroshima.rb",
+    logoText: "Hiroshima.rb",
+    foregroundColor: "rgb(255, 255, 255)",
+    backgroundColor: "rgb(206, 53, 53)",
+    generic: {
+      primaryFields: [
+                      {
+                        key: "member",
+                        label: "name",
+                        value: member.name,
+                      }
+                     ],
+      secondaryFields: [
+                        {
+                          key: "github",
+                          label: "github",
+                          value: member.github,
+                        },
+                        {
+                          key: "twitter",
+                          label: "twitter",
+                          value: "@#{member.twitter}",
+                        },
+                       ],
+      auxiliaryFields: [
+                        {
+                          key: "comment",
+                          label: "comment",
+                          value: member.profile,
+                        },
+                       ]
+    },
+  }.to_json
+end
+
+def create_pkpass(member)
+  require 'fileutils'
+  require 'pathname'
+  raw_dir = Pathname.new "pass/#{member.github}.hiroshima.rb.raw"
+  pass_file = "pass/#{member.github}.hiroshima.rb.pkpass"
+
+  unless File.exists? raw_dir
+    FileUtils.mkdir_p raw_dir
+  end
+  FileUtils.cp("resource/icon.png", raw_dir)
+  FileUtils.cp("resource/icon@2x.png", raw_dir)
+  FileUtils.cp("resource/logo.png", raw_dir)
+  FileUtils.cp("resource/logo@2x.png", raw_dir)
+  json_path = raw_dir.join("pass.json")
+
+  open(json_path,"w") do |io|
+    io.write pass_json(member)
+  end
+
+  `bin/signpass -p #{raw_dir}`
+end
+
+
+Hiroshimarb::Member.all.each do |member|
+  create_pkpass member
+end
