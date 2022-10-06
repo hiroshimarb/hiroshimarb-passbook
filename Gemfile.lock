@@ -1,11 +1,13 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.3.2)
+    addressable (2.8.1)
+      public_suffix (>= 2.0.2, < 6.0)
     hiroshimarb (0.0.3)
       launchy (~> 2.1.2)
     launchy (2.1.2)
       addressable (~> 2.3)
+    public_suffix (5.0.0)
 
 PLATFORMS
   ruby
